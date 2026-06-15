@@ -5,12 +5,36 @@ on:
   pull_request:
 
 jobs:
-  test:
+  basic-check:
+    name: Basic repository check
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get the code
+      - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Check that notes.md exists
-        run: test -f notes.md
+      - name: Confirm files are present
+        run: ls -la
+
+      - name: Print success message
+        run: echo "CI workflow ran successfully"
+
+  matrix-check:
+    name: Matrix check on Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20, 22]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Confirm Node version
+        run: node --version
